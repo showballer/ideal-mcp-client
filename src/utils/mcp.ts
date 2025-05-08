@@ -55,15 +55,24 @@ export function FillEnv(
 ): Record<string, string> {
   if (!env) return {};
   const pattern =
-    /\{\{(?<name>[^@]+)@(?<type>[^:]+)(::(?<description>[^}]*)?)?\}\}/;
+    /\{\{(?<name>[^@]+)@(?<type>[^:]+)(::(?<description>[^}]*)?)?\}\}/g;
   const _env = { ...env };
   const envKeys = Object.keys(env);
   for (const envKey of envKeys) {
     const envItem = env[envKey];
-    const match = envItem.match(pattern);
-    if (match && match.groups) {
-      _env[envKey] = params[match.groups.name] || '';
+    let result = envItem;
+    let match;
+
+    // 使用 while 循环找到所有匹配项并替换
+    while ((match = pattern.exec(envItem)) !== null) {
+      if (match.groups) {
+        const placeholder = match[0]; // 完整的占位符
+        const paramValue = params[match.groups.name] || '';
+        result = result.replace(placeholder, paramValue);
+      }
     }
+
+    _env[envKey] = result;
   }
   return _env;
 }

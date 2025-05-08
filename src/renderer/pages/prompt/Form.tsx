@@ -13,13 +13,13 @@ import {
 import { BracesVariable20Regular } from '@fluentui/react-icons';
 import useToast from 'hooks/useToast';
 import { IPromptDef } from 'intellichat/types';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import usePromptStore from 'stores/usePromptStore';
 import { parseVariables } from 'utils/util';
 import { isBlank } from 'utils/validators';
-import useProviderStore from 'stores/useProviderStore';
+import useProviderStore, { ModelOption } from 'stores/useProviderStore';
 
 function MessageField({
   label,
@@ -87,9 +87,32 @@ export default function Form() {
   const updatePrompt = usePromptStore((state) => state.updatePrompt);
   const getPrompt = usePromptStore((state) => state.getPrompt);
   const { notifyInfo, notifySuccess, notifyError } = useToast();
-  const groupedModelOptions = useMemo(() => getGroupedModelOptions(), []);
+  const [modelOptions, setModelOptions] = useState<{
+    [key: string]: ModelOption[];
+  }>({});
+
+  const selectedModelLabels = useMemo(() => {
+    return Object.keys(modelOptions).reduce((acc, group) => {
+      const options = modelOptions[group].filter((option) =>
+        models.includes(option.name),
+      );
+      if (options.length) {
+        acc.push(...options.map((option) => `${group}/${option.label}`));
+      }
+      return acc;
+    }, [] as string[]);
+  }, [modelOptions, models]);
 
   type PromptPayload = { id: string } & Partial<IPromptDef>;
+
+  const loadModels = useCallback(async () => {
+    const options = await getGroupedModelOptions();
+    setModelOptions(options);
+  }, []);
+
+  useEffect(() => {
+    loadModels();
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -134,11 +157,8 @@ export default function Form() {
       models,
       userVariables,
     } as PromptPayload;
-    // claude models don't need system message
-    if (!models.some((model) => model.startsWith('claude'))) {
-      $prompt.systemMessage = systemMessage;
-      $prompt.systemVariables = systemVariables;
-    }
+    $prompt.systemMessage = systemMessage;
+    $prompt.systemVariables = systemVariables;
     if (isBlank($prompt.name)) {
       notifyInfo(t('Notification.NameRequired'));
       return;
@@ -195,20 +215,24 @@ export default function Form() {
                   aria-labelledby="models"
                   multiselect
                   placeholder={
-                    models.length ? models.join(', ') : t('Common.Optional')
+                    selectedModelLabels.length
+                      ? selectedModelLabels.join(', ')
+                      : t('Common.Optional')
                   }
                   selectedOptions={models}
                   onOptionSelect={onModelSelect}
                 >
-                  {Object.keys(groupedModelOptions).map((group: string) => (
+                  {Object.keys(modelOptions).map((group: string) => (
                     <OptionGroup label={group} key={group}>
-                      {groupedModelOptions[group].map(
-                        (option: { value: string; label: string }) => (
+                      {modelOptions[group].map(
+                        (option: { name: string; label: string }) => (
                           <Option
-                            key={`${group}-${option.label}`}
-                            value={option.label}
+                            key={`${group}-${option.name}`}
+                            aria-label={option.label}
+                            text={option.label}
+                            value={option.name}
                           >
-                            {option.label}
+                            {option.label || option.name}
                           </Option>
                         ),
                       )}
@@ -220,17 +244,15 @@ export default function Form() {
                 {t('Prompt.Form.Tooltip.ApplicableModels')}
               </Text>
             </div>
-            {models.some((model) => model.startsWith('claude')) ? null : (
-              <div className="mb-2.5">
-                <MessageField
-                  label={t('Common.SystemMessage')}
-                  tooltip={t('Tooltip.SystemMessage')}
-                  value={systemMessage}
-                  onChange={onSystemMessageChange}
-                  variables={systemVariables}
-                />
-              </div>
-            )}
+            <div className="mb-2.5">
+              <MessageField
+                label={t('Common.SystemMessage')}
+                tooltip={t('Tooltip.SystemMessage')}
+                value={systemMessage}
+                onChange={onSystemMessageChange}
+                variables={systemVariables}
+              />
+            </div>
             <div className="mb-2.5">
               <MessageField
                 label={t('Common.UserMessage')}

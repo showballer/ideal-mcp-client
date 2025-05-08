@@ -125,7 +125,7 @@ export default function Editor({
           insertText(text);
         });
       } else if (item.kind === 'file' && item.type.startsWith('image/')) {
-        // 处理图片
+        // handle image paste
         const file = item.getAsFile();
         const reader = new FileReader();
         reader.onload = function (event) {
@@ -133,6 +133,13 @@ export default function Editor({
           img.src = event.target?.result as string;
           if (editorRef.current) {
             editorRef.current.appendChild(img);
+            const selection = window.getSelection();
+            // move cursor after the image
+            const range = document.createRange();
+            range.setStartAfter(img);
+            range.collapse(true);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
           }
         };
         reader.readAsDataURL(file as Blob);
@@ -175,10 +182,7 @@ export default function Editor({
   };
 
   return (
-    <div
-      className="relative flex flex-col cursor-text editor"
-      onClick={() => editorRef.current?.focus()}
-    >
+    <div className="relative flex flex-col cursor-text editor">
       {states.loading ? (
         <div className="editor-loading-mask absolute flex flex-col justify-center items-center">
           <Button onClick={onAbortClick} className="flex items-center">
@@ -203,13 +207,14 @@ export default function Editor({
         id="editor"
         ref={editorRef}
         autoCorrect="on"
-        className="w-full bg-red-500 outline-0 px-2.5 pb-2.5 bg-brand-surface-1 overflow-y-auto overflow-x-hidden"
+        className="w-full outline-0 px-2.5 pb-2.5 bg-brand-surface-1 overflow-y-auto overflow-x-hidden"
         onKeyDown={onKeyDown}
         onFocus={restoreRange}
         onBlur={onBlur}
         onInput={onInput}
         style={{
           resize: 'none',
+          minHeight: '60%',
           whiteSpace: 'pre-wrap',
           opacity: isReady ? 1 : 0,
         }}

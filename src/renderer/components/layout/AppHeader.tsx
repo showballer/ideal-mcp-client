@@ -80,7 +80,7 @@ export default function AppHeader() {
             onClick={() => toggleSidebarVisibility()}
           />
         </div>
-        <div>
+        <div className="pl-1">
           <Button
             icon={<SearchIcon />}
             appearance="transparent"
@@ -88,9 +88,7 @@ export default function AppHeader() {
           />
         </div>
         <div>{NetworkStatusIcon}</div>
-        <div className="ml-2">
-          <UpgradeIndicator />
-        </div>
+        <div className="ml-2">{collapsed || <UpgradeIndicator />}</div>
       </div>
       <SearchDialog open={searchOpen} setOpen={setSearchOpen} />
     </div>

@@ -13,6 +13,10 @@ export default class AzureChatService
     this.provider = Azure;
   }
 
+  protected getSystemRoleName(): string {
+    return 'system';
+  }
+
   protected async makeRequest(
     messages: IChatRequestMessage[],
     msgId?: string,

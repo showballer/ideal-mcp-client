@@ -53,15 +53,12 @@ export default function ModelCtrl({
         }
       }
       setCurModel(defaultModel);
-      await editStage(chat.id, {
-        provider: provider.name,
-        model: defaultModel.name,
-      });
     },
-    [chat.id],
+    [chat.id, chat.provider, chat.model],
   );
 
   useEffect(() => {
+    isChanged.current = false;
     const ctxProvider = ctx.getProvider();
     setCurProvider(ctxProvider);
     setCurModel(ctx.getModel());
@@ -70,9 +67,8 @@ export default function ModelCtrl({
       setCurProvider(undefined);
       setCurModel(undefined);
       setModels([]);
-      isChanged.current = false;
     };
-  }, [chat.id, chat.provider]);
+  }, [chat.id, chat.provider, chat.model]);
 
   useEffect(() => {
     if (curProvider) {
@@ -162,7 +158,7 @@ export default function ModelCtrl({
                   setCurProvider(provider);
                 }}
               >
-                <div className="flex justify-start items-center gap-1 text-xs py-0.5">
+                <div className="flex justify-start items-center gap-1 text-sm py-0.5">
                   <span>{provider.name}</span>
                   {curProvider?.name === provider.name && <span>✓</span>}
                 </div>
@@ -204,7 +200,6 @@ export default function ModelCtrl({
                   key={model.name}
                   disabled={!model.isReady}
                   style={{
-                    fontSize: 12,
                     paddingTop: 2,
                     paddingBottom: 2,
                     minHeight: 12,
@@ -214,7 +209,7 @@ export default function ModelCtrl({
                     setCurModel(model);
                   }}
                 >
-                  <div className="flex justify-start items-center gap-1 text-xs py-1">
+                  <div className="flex justify-start items-center gap-1 text-sm py-1">
                     <ToolStatusIndicator model={model} withTooltip />
                     <span> {model.label || model.name}</span>
                     {curModel?.name === model.name && <span>✓</span>}

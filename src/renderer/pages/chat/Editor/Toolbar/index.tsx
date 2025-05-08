@@ -43,7 +43,7 @@ export default function EditorToolbar({
             />
           </div>
           <div className="-ml-[4px]">
-            <CtxNumCtrl ctx={ChatContext} chat={chat} disabled={!isReady} />
+            <CtxNumCtrl chat={chat} disabled={!isReady} />
           </div>
           <ImgCtrl ctx={ChatContext} chat={chat} disabled={!isReady} />
         </div>

@@ -29,33 +29,42 @@ export default function CapabilityTag(
 
   const { t } = useTranslation();
 
-  const colorCls = useMemo<string>(() => {
+  const tagColorCls = useMemo<string>(() => {
     return (
       {
         json: 'bg-teal-50 dark:bg-teal-900 text-teal-600 dark:text-teal-300',
         tools:
-          'bg-slate-50 dark:bg-slate-900/10 text-slate-600 dark:text-slate-300',
+          'bg-[#d8e6f1] dark:bg-[#365065] text-[#546576] dark:text-[#e3e9e5]',
         vision:
-          'bg-purple-50 dark:bg-purple-900/25 text-purple-600 dark:text-purple-400',
+          'bg-[#e6ddee] dark:bg-[#4e3868] text-[#9e7ebd] dark:text-[#d9d4de]',
+      } as { [key: string]: string }
+    )[capabilityName];
+  }, [capabilityName]);
+
+  const dotColorCls = useMemo<string>(() => {
+    return (
+      {
+        json: 'bg-teal-400 bg:text-teal-600',
+        tools: 'bg-[#546576] bg:text-[#46799f]',
+        vision: 'bg-[#9e7ebd] bg:text-[#8d60c3]',
       } as { [key: string]: string }
     )[capabilityName];
   }, [capabilityName]);
 
   return originalSupport ? (
     <div
-      className={`flex text-center justify-start gap-1 items-center rounded-lg text-xs pl-1.5 pr-1 ${colorCls}`}
+      style={{ fontSize: '10px' }}
+      className={`flex text-center justify-start gap-1 items-center rounded-full text-xs px-1.5 py-[1px] ${actualSupport ? tagColorCls : 'bg-gray-100 dark:bg-zinc-700 text-gray-400 dark:text-gray-500'}`}
     >
-      {t(`Tags.${capitalize(capabilityName)}`)}
-      <span
-        style={{ fontSize: '10px' }}
-        className={
+      <div
+        style={{ fontSize: '8px' }}
+        className={`flex-shrink-0 w-2 h-2 rounded-full ${
           actualSupport
-            ? 'text-green-400 dark:text-green-600'
-            : 'text-gray-400 dark:text-gray-600'
-        }
-      >
-        ●
-      </span>
+            ? dotColorCls
+            : 'border border-gray-400 bg:border-gray-500'
+        }`}
+      />
+      <span className="-mt-0.5">{t(`Tags.${capitalize(capabilityName)}`)}</span>
     </div>
   ) : null;
 }

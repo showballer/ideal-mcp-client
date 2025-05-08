@@ -12,6 +12,7 @@ import {
 import { isBlank } from 'utils/validators';
 import Google from 'providers/Google';
 import {
+  addStringTypeToEnumProperty,
   getBase64,
   removeAdditionalProperties,
   splitByImg,
@@ -93,12 +94,13 @@ export default class GoogleChatService
     }
     const properties: any = {};
     for (const key in tool.inputSchema.properties) {
-      const prop = tool.inputSchema.properties[key];
+      let prop = tool.inputSchema.properties[key];
       /**
        * cause gemini-pro-vision not support additionalProperties
        */
-      if (prop.items) {
-        removeAdditionalProperties(prop.items);
+      if (prop) {
+        prop = removeAdditionalProperties(prop);
+        prop = addStringTypeToEnumProperty(prop);
       }
       properties[key] = {
         type: prop.type,

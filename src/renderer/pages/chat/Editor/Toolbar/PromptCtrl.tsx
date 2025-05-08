@@ -27,6 +27,7 @@ import { fillVariables, highlight, insertAtCursor } from 'utils/util';
 import { isNil, pick } from 'lodash';
 import { IChat, IChatContext, IPrompt, IPromptDef } from 'intellichat/types';
 import useChatStore from 'stores/useChatStore';
+import { IChatModelConfig } from 'providers/types';
 import PromptVariableDialog from '../PromptVariableDialog';
 
 const PromptIcon = bundleIcon(Prompt20Filled, Prompt20Regular);
@@ -34,7 +35,7 @@ const PromptIcon = bundleIcon(Prompt20Filled, Prompt20Regular);
 export default function PromptCtrl({
   ctx,
   chat,
-  disabled
+  disabled,
 }: {
   ctx: IChatContext;
   chat: IChat;
@@ -48,18 +49,11 @@ export default function PromptCtrl({
   const [userVariables, setUserVariables] = useState<string[]>([]);
   const [promptPickerOpen, setPromptPickerOpen] = useState<boolean>(false);
   const [pickedPrompt, setPickedPrompt] = useState<IPrompt | null>(null);
+  const [model, setModel] = useState<IChatModelConfig>();
   const allPrompts = usePromptStore((state) => state.prompts);
   const fetchPrompts = usePromptStore((state) => state.fetchPrompts);
   const getPrompt = usePromptStore((state) => state.getPrompt);
   const editStage = useChatStore((state) => state.editStage);
-
-  const curModelLabel = useMemo(() => {
-    if (open) {
-      const model = ctx.getModel();
-      return model.label || (model.name as string);
-    }
-    return ''
-  }, [open]);
 
   const closeDialog = () => {
     setOpen(false);
@@ -161,6 +155,9 @@ export default function PromptCtrl({
 
   useEffect(() => {
     Mousetrap.bind('mod+shift+2', openDialog);
+    if (open) {
+      setModel(ctx.getModel());
+    }
     return () => {
       Mousetrap.unbind('mod+shift+2');
     };
@@ -173,7 +170,7 @@ export default function PromptCtrl({
           <Button
             disabled={disabled}
             size="small"
-            title={t('Common.Prompts') + '(Mod+Shift+2)'}
+            title={`${t('Common.Prompts')}(Mod+Shift+2)`}
             aria-label={t('Common.Prompts')}
             appearance="subtle"
             style={{ borderColor: 'transparent', boxShadow: 'none' }}
@@ -225,10 +222,12 @@ export default function PromptCtrl({
                   </div>
                   <div>
                     {prompts.map((prompt: IPromptDef) => {
-                      let applicableState = 0,
-                        icon = null;
+                      let applicableState = 0;
+                      let icon = null;
                       if ((prompt.models?.length || 0) > 0) {
-                        applicableState = prompt.models?.includes(curModelLabel)
+                        applicableState = prompt.models?.includes(
+                          model?.name || '',
+                        )
                           ? 1
                           : -1;
                         icon =

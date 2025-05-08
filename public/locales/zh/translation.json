@@ -298,5 +298,12 @@
   "Common.Action.Clear": "清除",
   "Input.Hint.EnterSubmitEscCancel": "回车确认，Esc 取消",
   "Settings.Notification.NoValidBackupFound": "未找到可用备份数据，产品升级更新了配置结构，旧备份不再适用，请重新备份。",
-  "Bookmarks.Hint.Favorites": "你关注的书签将显示在这里。"
+  "Bookmarks.Hint.Favorites": "你关注的书签将显示在这里。",
+  "Common.Total": "合计",
+  "Common.Cost": "成本",
+  "Common.OutputUsage": "输出用量",
+  "Common.InputUsage": "输入用量",
+  "Common.StartDate": "开始日期",
+  "Common.EndDate": "结束日期",
+  "Common.ExtraLarge": "特大"
 }

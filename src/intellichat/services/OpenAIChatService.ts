@@ -17,6 +17,8 @@ import { ITool } from 'intellichat/readers/IChatReader';
 import NextChatService from './NextChatService';
 import INextChatService from './INextCharService';
 import OpenAI from '../../providers/OpenAI';
+import { isObject } from 'lodash';
+import Ollama from 'providers/Ollama';
 
 // const debug = Debug('5ire:intellichat:OpenAIChatService');
 
@@ -32,6 +34,10 @@ export default class OpenAIChatService
     });
   }
 
+  protected getSystemRoleName() {
+    return 'developer';
+  }
+
   // eslint-disable-next-line class-methods-use-this
   protected getReaderType() {
     return OpenAIReader;
@@ -39,7 +45,9 @@ export default class OpenAIChatService
 
   protected async convertPromptContent(
     content: string,
-  ): Promise<string | IChatRequestMessageContent[]> {
+  ): Promise<
+    string | IChatRequestMessageContent[] | Partial<IChatRequestMessageContent>
+  > {
     if (this.context.getModel().capabilities.vision?.enabled) {
       const items = splitByImg(content);
       const result: IChatRequestMessageContent[] = [];
@@ -73,7 +81,7 @@ export default class OpenAIChatService
     const result = [];
     const model = this.context.getModel();
     const systemMessage = this.context.getSystemMessage();
-    let sysRole = 'developer';
+    let sysRole = this.getSystemRoleName();
     if (['o1', 'o3'].some((prefix) => model.name.startsWith(prefix))) {
       sysRole = 'user'; // right now, o1, o3 models are not compatible with the system message
     }
@@ -107,7 +115,6 @@ export default class OpenAIChatService
               return content
                 .map((item) => {
                   if (typeof item === 'string') return item;
-
                   if (item && typeof item === 'object') {
                     if (item.type === 'text' && typeof item.text === 'string') {
                       return item.text;
@@ -145,10 +152,19 @@ export default class OpenAIChatService
         }
         const { content } = msg;
         if (typeof content === 'string') {
-          return {
-            role: 'user',
-            content: await this.convertPromptContent(content),
-          };
+          const formattedContent = await this.convertPromptContent(content);
+          // Note: Ollama's API requires the content to be in a specific format
+          if (this.name === Ollama.name) {
+            return {
+              role: 'user',
+              ...(formattedContent as Partial<IChatRequestMessageContent>),
+            };
+          } else {
+            return {
+              role: 'user',
+              content: formattedContent,
+            };
+          }
         }
         return {
           role: 'user',
@@ -235,7 +251,12 @@ export default class OpenAIChatService
     }
     const maxTokens = this.context.getMaxTokens();
     if (maxTokens) {
-      payload.max_completion_tokens = maxTokens;
+      // OpenAI's new API use max_completion_tokens, while others still use max_tokens
+      if (this.name.toLocaleLowerCase() === 'openai') {
+        payload.max_completion_tokens = maxTokens;
+      } else {
+        payload.max_tokens = maxTokens;
+      }
     }
 
     if (model.name.startsWith('o1') || model.name.startsWith('o3')) {

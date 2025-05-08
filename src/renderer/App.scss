@@ -301,8 +301,8 @@ main {
   margin-bottom: 10px;
 }
 .page-header {
-  padding-top: 20px;
-  padding-bottom: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 #page-settings input,
@@ -348,11 +348,9 @@ main {
 }
 
 .tag-model {
-  background-color: rgba(162, 238, 239, 0.18);
   font-size: 12px;
   line-height: 24px;
   vertical-align: middle;
-  @apply rounded;
 }
 
 .tag-variable {
@@ -398,5 +396,46 @@ mark {
   .svg-icon {
     color: #171717;
     stroke: #171717;
+  }
+}
+
+.font-lg {
+  font-size: 16px;
+  * {
+    font-size: 16px;
+  }
+  p,ul,li{
+    line-height: 1.8;
+  }
+  button,span,div{
+    font-size: 16px!important;
+  }
+  code,pre {
+    font-size: 14px!important;
+    * {
+      font-size: 14px!important;
+    }
+  }
+}
+
+.font-xl {
+  font-size: 18px;
+  * {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  button,span,.fui-MenuItem__content{
+    font-size: 18px;
+  }
+  p,ul,li{
+    line-height: 2;
+  }
+  code,
+  pre {
+    font-size: 16px!important;
+
+    * {
+      font-size: 16px!important;
+    }
   }
 }

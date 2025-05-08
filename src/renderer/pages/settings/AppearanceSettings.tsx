@@ -72,6 +72,7 @@ export default function AppearanceSettings() {
         >
           <Radio name="fontSize" value="base" label={t('Common.Normal')} />
           <Radio name="fontSize" value="large" label={t('Common.Large')} />
+          <Radio name="fontSize" value="xl" label={t('Common.ExtraLarge')} />
         </RadioGroup>
       </div>
     </div>

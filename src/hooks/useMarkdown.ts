@@ -7,11 +7,12 @@ import mathjax3 from 'markdown-it-mathjax3';
 // @ts-ignore
 import markdownItMermaid from 'markdown-it-mermaid';
 import hljs from 'highlight.js/lib/common';
-import MarkdownItCodeCopy from '../libs/markdownit-plugins/CodeCopy';
-import useToast from './useToast';
 import useAppearanceStore from 'stores/useAppearanceStore';
 // @ts-ignore
-import {full as markdownItEmoji } from 'markdown-it-emoji';
+import { full as markdownItEmoji } from 'markdown-it-emoji';
+import MarkdownItCodeCopy from '../libs/markdownit-plugins/CodeCopy';
+import useToast from './useToast';
+// @ts-ignore
 import markdownItEChartsPlugin from '../libs/markdownit-plugins/markdownItEChartsPlugin';
 
 export default function useMarkdown() {
@@ -74,17 +75,16 @@ export default function useMarkdown() {
       },
     })
     .use(markdownItEmoji)
-    .use(markdownItEChartsPlugin)
-    ;
+    .use(markdownItEChartsPlugin);
   md.mermaid.loadPreferences({
     get: (key: string) => {
       if (key === 'mermaid-theme') {
         return theme === 'dark' ? 'dark' : 'default';
-      } else if (key === 'gantt-axis-format') {
-        return '%Y/%m/%d';
-      } else {
-        return undefined;
       }
+      if (key === 'gantt-axis-format') {
+        return '%Y/%m/%d';
+      }
+      return undefined;
     },
   });
   const defaultRender =
@@ -105,22 +105,33 @@ export default function useMarkdown() {
     return defaultRender(tokens, idx, options, env, self);
   };
 
-  const defaultImageRender = md.renderer.rules.image || function(tokens: any, idx: any, options: any, env: any, self: any) {
-    return self.renderToken(tokens, idx, options);
-  };
+  const defaultImageRender =
+    md.renderer.rules.image ||
+    function (tokens: any, idx: any, options: any, env: any, self: any) {
+      return self.renderToken(tokens, idx, options);
+    };
 
-  md.renderer.rules.image = function(tokens: any, idx: any, options: any, env: any, self: any) {
+  md.renderer.rules.image = function (
+    tokens: any,
+    idx: any,
+    options: any,
+    env: any,
+    self: any,
+  ) {
     const token = tokens[idx];
     const srcIndex = token.attrIndex('src');
     if (srcIndex >= 0) {
       const src = token.attrs[srcIndex][1];
-      if (!src.startsWith('http') && !src.startsWith('file://')) {
+      if (
+        !src.startsWith('http') &&
+        !src.startsWith('file://') &&
+        !src.startsWith('data:')
+      ) {
         token.attrs[srcIndex][1] = `file://${src}`;
       }
     }
     return defaultImageRender(tokens, idx, options, env, self);
   };
-
 
   return {
     render: (str: string): string => md.render(str),

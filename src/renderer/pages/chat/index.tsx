@@ -73,7 +73,7 @@ export default function Chat() {
   const {
     fetchMessages,
     initChat,
-    getChat,
+    loadChat,
     updateChat,
     updateStates,
     getCurFolderSettings,
@@ -135,11 +135,11 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    const loadChat = async () => {
+    const initializeChat = async () => {
       setIsLoading(true);
       try {
         if (activeChatId !== tempChatId) {
-          return await getChat(activeChatId);
+          return await loadChat(activeChatId);
         }
         if (folder) {
           return initChat(getCurFolderSettings());
@@ -149,7 +149,7 @@ export default function Chat() {
         setIsLoading(false);
       }
     };
-    loadChat();
+    initializeChat();
     return () => {
       isUserScrollingRef.current = false;
     };

@@ -1,10 +1,15 @@
 .spinner {
-  border: 3px solid #999;
-  border-bottom-color: #666;
+  border: 3px solid #d0e1db;
+  border-bottom-color: #5f8b72;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
+  }
+
+  [data-theme='dark'] .spinner {
+    border: 3px solid #2c5445;
+    border-bottom-color: #409165;
   }
 
   @keyframes rotation {

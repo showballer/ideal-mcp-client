@@ -308,5 +308,12 @@
   "Common.Action.Clear": "Clear",
   "Input.Hint.EnterSubmitEscCancel": "Press Enter to confirm, Esc to cancel.",
   "Settings.Notification.NoValidBackupFound": "No available backup data was found. The product upgrade has updated the configuration structure, and the old backup is no longer applicable. Please back up again.",
-  "Bookmarks.Hint.Favorites": "Your favorite bookmarks will appear here."
+  "Bookmarks.Hint.Favorites": "Your favorite bookmarks will appear here.",
+  "Common.Total": "Total",
+  "Common.Cost": "Cost",
+  "Common.OutputUsage": "Output Usage",
+  "Common.InputUsage": "Input Usage",
+  "Common.StartDate": "Start Date",
+  "Common.EndDate": "End Date",
+  "Common.ExtraLarge": "Extral Large"
 }

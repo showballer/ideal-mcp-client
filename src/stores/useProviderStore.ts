@@ -1,4 +1,4 @@
-import { find, isNil, keyBy, omit, unionBy } from 'lodash';
+import { find, isNil, keyBy, omit, pickBy, unionBy } from 'lodash';
 import { getBuiltInProviders } from 'providers';
 import {
   IChatModel,
@@ -131,7 +131,7 @@ const getMergedLocalModels = (provider: IChatProviderConfig) => {
         noStreaming: model.noStreaming || false,
         disabled: customModel?.disabled || false,
         capabilities: customModel?.capabilities || model.capabilities || {},
-        extras: customModel?.extras || {},
+        extras: { ...model.extras, ...customModel?.extras },
       } as IChatModelConfig;
       mergedModel.isReady = isModelReady(
         provider.modelExtras as string[],
@@ -386,7 +386,10 @@ const useProviderStore = create<IProviderStore>((set, get) => ({
     const { getModelsSync, getAvailableProvider } = get();
     const provider = getAvailableProvider(providerName);
     if (provider.modelsEndpoint) {
-      return mergeRemoteModel(modelName);
+      const customModel = provider.models.find(
+        (m: IChatModelConfig) => m.name === modelName,
+      );
+      return mergeRemoteModel(modelName, customModel);
     }
     const models = getModelsSync(provider, { withDisabled: false });
     return (
@@ -420,9 +423,9 @@ const useProviderStore = create<IProviderStore>((set, get) => ({
     provider: IChatProviderConfig,
     options?: { withDisabled?: boolean },
   ) => {
-    const modelsMap = keyBy(provider.models || [], 'name');
     let $models: IChatModelConfig[] = [];
     if (provider.modelsEndpoint) {
+      const modelsMap = keyBy(provider.models || [], 'name');
       try {
         const resp = await fetch(
           `${provider.apiBase}${provider.modelsEndpoint}`,
@@ -462,16 +465,18 @@ const useProviderStore = create<IProviderStore>((set, get) => ({
     await Promise.all(
       providers.map(async (provider) => {
         const models = await getModels(provider);
-        result[provider.name] = models.map((model) => ({
-          label: model.label || model.name,
-          name: model.name,
-          isReady: model.isReady,
-          isDefault: model.isDefault || false,
-        }));
+        result[provider.name] = models
+          .map((model) => ({
+            label: model.label || model.name,
+            name: model.name,
+            isReady: model.isReady,
+            isDefault: model.isDefault || false,
+          }))
+          .filter((model: ModelOption) => model.name !== ERROR_MODEL);
         return provider;
       }),
     );
-    return result;
+    return pickBy(result, (val: ModelOption[]) => val.length > 0);
   },
   createModel: (model: IChatModelConfig) => {
     const { provider, updateProvider } = get();

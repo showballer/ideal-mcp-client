@@ -92,6 +92,7 @@ export interface IChatStore {
   deleteChat: () => Promise<boolean>;
   fetchChat: (limit?: number) => Promise<IChat[]>;
   getChat: (id: string) => Promise<IChat>;
+  loadChat: (id: string) => Promise<IChat>;
   // message
   createMessage: (message: Partial<IChatMessage>) => Promise<IChatMessage>;
   appendReply: (chatId: string, reply: string, reasoning: string) => void;
@@ -538,6 +539,11 @@ const useChatStore = create<IChatStore>((set, get) => ({
       }
     }
     debug('Get chat:', chat);
+    return chat;
+  },
+  loadChat: async (id: string) => {
+    const { getChat } = get();
+    const chat = await getChat(id);
     set({ chat });
     return chat;
   },

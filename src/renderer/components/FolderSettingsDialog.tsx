@@ -71,10 +71,13 @@ export default function FolderSettingsDialog({
     async (providerName: string) => {
       const $models = await getModels(getAvailableProvider(providerName));
       setModels($models);
-      const $model = find($models, { isDefault: true }) || $models[0];
+      const $model =
+        find($models, { name: folder?.model }) ||
+        find($models, { isDefault: true }) ||
+        $models[0];
       setFolderModel($model.name);
     },
-    [folderProvider],
+    [folder?.id, folder?.model, models],
   );
 
   const subChats = useMemo(() => {

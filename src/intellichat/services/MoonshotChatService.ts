@@ -14,4 +14,9 @@ export default class MoonshotChatService
     super(name, context);
     this.provider = Moonshot;
   }
+
+  protected getSystemRoleName(): string {
+    return 'system';
+  }
+
 }

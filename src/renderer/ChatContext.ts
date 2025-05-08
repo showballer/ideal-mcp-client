@@ -19,7 +19,7 @@ const getProvider = () => {
   const { chat } = useChatStore.getState();
   const { getAvailableProvider, getDefaultProvider } =
     useProviderStore.getState();
-  debug(`getProvider: chat(${chat.summary})`, chat.provider);
+  debug(`getProvider: chat(${chat.summary || ''})`, chat.provider);
   if (chat.provider) {
     return getAvailableProvider(chat.provider);
   }
@@ -78,6 +78,7 @@ const getMaxTokens = () => {
   ) {
     maxTokens = prompt?.maxTokens || (prompt?.maxTokens as number);
   }
+  console.log('chat?.maxTokens', chat?.maxTokens);
   if (
     chat?.maxTokens != null &&
     isValidMaxTokens(chat?.maxTokens, provider.name, model.name as string)

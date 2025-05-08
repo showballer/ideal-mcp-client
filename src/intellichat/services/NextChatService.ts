@@ -23,6 +23,7 @@ export default abstract class NextCharService {
   context: IChatContext;
   provider: IServiceProvider;
 
+
   protected abstract getReaderType(): new (
     reader: ReadableStreamDefaultReader<Uint8Array>,
   ) => IChatReader;
@@ -42,6 +43,10 @@ export default abstract class NextCharService {
   protected outputTokens: number = 0;
 
   protected traceTool: (chatId: string, label: string, msg: string) => void;
+
+  protected getSystemRoleName() {
+    return 'system';
+  }
 
   constructor({
     name,
@@ -135,7 +140,7 @@ export default abstract class NextCharService {
     content: string,
   ): Promise<
     | string
-    | IChatRequestMessageContent[]
+    | Partial<IChatRequestMessageContent>
     | IChatRequestMessageContent[]
     | IGeminiChatRequestMessagePart[]
   > {

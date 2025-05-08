@@ -10,7 +10,6 @@ import { Divider } from '@fluentui/react-components';
 import useKnowledgeStore from 'stores/useKnowledgeStore';
 import useToast from 'hooks/useToast';
 import ToolSpinner from 'renderer/components/ToolSpinner';
-import useSettingsStore from 'stores/useSettingsStore';
 import {
   ChevronDown16Regular,
   ChevronUp16Regular,
@@ -30,7 +29,6 @@ const debug = Debug('5ire:pages:chat:Message');
 export default function Message({ message }: { message: IChatMessage }) {
   const { t } = useTranslation();
   const { notifyInfo } = useToast();
-  const fontSize = useSettingsStore((state) => state.fontSize);
   const keywords = useChatStore((state: any) => state.keywords);
   const states = useChatStore().getCurState();
   const { showCitation } = useKnowledgeStore();
@@ -44,6 +42,7 @@ export default function Message({ message }: { message: IChatMessage }) {
     () => JSON.parse(message.citedFiles || '[]'),
     [message.citedFiles],
   );
+
 
   const citedChunks = useMemo(() => {
     return JSON.parse(message.citedChunks || '[]');
@@ -234,9 +233,7 @@ export default function Message({ message }: { message: IChatMessage }) {
             ) : null}
             <div
               lang="en"
-              className={`break-words hyphens-auto mt-1${
-                fontSize === 'large' ? 'font-lg' : ''
-              }`}
+              className='break-words hyphens-auto mt-1'
               dangerouslySetInnerHTML={{
                 __html: render(
                   `${
@@ -265,9 +262,7 @@ export default function Message({ message }: { message: IChatMessage }) {
         >
           <div className="avatar flex-shrink-0 mr-2" />
           <div
-            className={`mt-1 break-word ${
-              fontSize === 'large' ? 'font-lg' : ''
-            }`}
+            className='mt-1 break-word'
             dangerouslySetInnerHTML={{
               __html: render(highlight(message.prompt, keyword) || ''),
             }}

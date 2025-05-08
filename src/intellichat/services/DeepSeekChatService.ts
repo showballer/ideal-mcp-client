@@ -13,6 +13,11 @@ export default class DeepSeekChatService
     this.provider = DeepSeek;
   }
 
+  protected getSystemRoleName(): string {
+    return 'system';
+  }
+
+
   protected async makeRequest(
     messages: IChatRequestMessage[],
     msgId?: string,

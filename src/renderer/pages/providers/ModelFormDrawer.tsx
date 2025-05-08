@@ -97,7 +97,7 @@ export default function ModelFormDrawer({
     setLabel('');
     setDescription('');
     setContextWindow(DEFAULT_CONTEXT_WINDOW);
-    setMaxTokens(DEFAULT_MAX_TOKENS);
+    setMaxTokens(MAX_TOKENS);
     setInputPrice(0);
     setOutputPrice(0);
     setVision(false);

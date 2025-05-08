@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Debug from 'debug';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import {
@@ -69,8 +69,20 @@ export default function FluentApp() {
   const { i18n } = useTranslation();
   const themeSettings = useSettingsStore((state) => state.theme);
   const theme = useAppearanceStore((state) => state.theme);
+  const fontSize = useSettingsStore((state) => state.fontSize);
   const language = useSettingsStore((state) => state.language);
   const setTheme = useAppearanceStore((state) => state.setTheme);
+
+  const fontSizeCls = useMemo(() => {
+    switch (fontSize) {
+      case 'large':
+        return 'font-lg';
+      case 'xl':
+        return 'font-xl';
+      default:
+        return 'font-base'; // default
+    }
+  }, [fontSize]);
 
   useEffect(() => {
     window.electron.ipcRenderer.on('native-theme-change', (_theme: unknown) => {
@@ -117,7 +129,7 @@ export default function FluentApp() {
       <Router>
         <AppHeader />
         <Toaster toasterId="toaster" limit={5} offset={{ vertical: 25 }} />
-        <div className="relative flex h-screen w-full overflow-hidden main-container">
+        <div className={`relative flex h-screen w-full overflow-hidden main-container ${fontSizeCls}`}>
           <AppSidebar />
           <main className="relative px-5 flex h-full w-full flex-col overflow-hidden">
             <Routes>

@@ -21,24 +21,6 @@
     Arial,
     sans-serif;
 
-  .font-lg {
-    font-size: 16px;
-
-    * {
-      font-size: 16px;
-      line-height: 2;
-    }
-
-    code,
-    pre {
-      font-size: 14px;
-
-      * {
-        font-size: 14px;
-      }
-    }
-  }
-
   .avatar {
     width: 32px;
     height: 32px;
@@ -104,6 +86,11 @@
 
   table tr:first-child th:last-child {
     border-top-right-radius: 6px;
+  }
+  img {
+    max-width: 95%;
+    max-height: 300px;
+    border-radius: 6px;
   }
 }
 

@@ -85,15 +85,15 @@ export default function ChatFolder({
     (fld: IChatFolder) => {
       if (openFolders.includes(fld.id)) {
         return fld.id === selectedFolder?.id ? (
-          <FolderOpenFilled />
+          <FolderOpenFilled className='w-5 h-5' />
         ) : (
-          <FolderOpenRegular />
+          <FolderOpenRegular className='w-5 h-5' />
         );
       }
       return fld.id === selectedFolder?.id ? (
-        <FolderFilled />
+        <FolderFilled className='w-5 h-5' />
       ) : (
-        <FolderRegular />
+        <FolderRegular className='w-5 h-5' />
       );
     },
     [openFolders, selectedFolder],

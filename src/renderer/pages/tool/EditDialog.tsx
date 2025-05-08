@@ -308,12 +308,12 @@ export default function ToolEditDialog(options: {
                       {Object.keys(env).map((envKey: string) => (
                         <div
                           key={envKey}
-                          className="flex flex-start items-center [&:not(:last-child)]:border-b w-full px-1"
+                          className="flex flex-start items-center [&:not(:last-child)]:border-b px-1"
                         >
-                          <div className="w-5/12 px-2 text-xs overflow-hidden text-nowrap truncate">
+                          <div className="w-[215px] mx-1.5 text-xs overflow-hidden text-nowrap truncate flex-grow-0">
                             {envKey}
                           </div>
-                          <div className="w-6/12 px-2 text-xs overflow-hidden text-nowrap truncate">
+                          <div className="w-[261px] mx-1 text-xs overflow-hidden text-nowrap truncate flex-grow-0">
                             {env[envKey]}
                           </div>
                           <div>

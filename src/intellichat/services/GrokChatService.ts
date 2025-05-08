@@ -7,8 +7,12 @@ export default class GrokChatService
   extends OpenAIChatService
   implements INextChatService
 {
-  constructor(name:string, chatContext: IChatContext) {
+  constructor(name: string, chatContext: IChatContext) {
     super(name, chatContext);
     this.provider = Grok;
+  }
+
+  protected getSystemRoleName(): string {
+    return 'system';
   }
 }

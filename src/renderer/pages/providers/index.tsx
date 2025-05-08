@@ -19,7 +19,7 @@ import {
   MoreHorizontal24Filled,
 } from '@fluentui/react-icons';
 import supabase from 'vendors/supa';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useProviderStore from 'stores/useProviderStore';
 import useToast from 'hooks/useToast';
@@ -33,9 +33,8 @@ import { captureException } from '../../logging';
 const debug = Debug('5ire:pages:providers:index');
 
 const DEFAULT_HEIGHT = 400;
-const HEADER_HEIGHT = 100;
+const HEADER_HEIGHT = 90;
 const LIST_ITEM_HEIGHT = 42;
-const PROVIDER_FORM_HEIGHT = 189;
 
 const AddIcon = bundleIcon(AddCircleFilled, AddCircleRegular);
 const CloudArrowUpIcon = bundleIcon(
@@ -59,6 +58,7 @@ export default function Providers() {
   const { createProvider } = useProviderStore();
   const [contentHeight, setContentHeight] = useState(DEFAULT_HEIGHT);
   const [updatedAtCloud, setUpdatedAtCloud] = useState<string>();
+  const providerFormRef = useRef<HTMLDivElement>(null);
   const msgBarHeight = useMemo(
     () => (updatedAtCloud ? 31 : 0),
     [updatedAtCloud],
@@ -81,14 +81,12 @@ export default function Providers() {
     }
     (async () => {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('settings')
           .select('updated_at')
           .eq('id', user.id)
           .maybeSingle();
-        if (error) {
-          notifyError(error.message);
-        } else if (data?.updated_at) {
+        if (data?.updated_at) {
           const dt = new Date(data.updated_at);
           setUpdatedAtCloud(dt.toLocaleString());
           setUpdated(false);
@@ -202,7 +200,7 @@ export default function Providers() {
           </Menu>
         </div>
         {updatedAtCloud && (
-          <div className="flex animate-in justify-between items-center text-xs py-1 px-5 bg-green-100 dark:bg-green-500/10 border-t border-green-600/50 dark:border-green-900 -mx-5">
+          <div className="flex animate-in justify-between items-center text-xs py-1 px-5 bg-[#dbe9da] text-[#618d69] dark:bg-[#2b5239] dark:text-[#b3c1b8] border-t border-[#618d69]/10 dark:border-green-900 -mx-5">
             <span className="latin">
               {t('Settings.Info.UpdatedAtCloud')}&nbsp;{updatedAtCloud}
             </span>
@@ -249,9 +247,15 @@ export default function Providers() {
         <div className="col-span-3 h-full">
           {selectedProvider && (
             <div>
-              <ProviderForm />
+              <div ref={providerFormRef}>
+                <ProviderForm />
+              </div>
               <ModelList
-                height={contentHeight - (HEADER_HEIGHT + PROVIDER_FORM_HEIGHT)}
+                height={
+                  contentHeight -
+                  (HEADER_HEIGHT +
+                    (providerFormRef.current?.offsetHeight || 153))
+                }
               />
             </div>
           )}

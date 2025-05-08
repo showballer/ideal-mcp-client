@@ -21,7 +21,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useChatStore from 'stores/useChatStore';
 import { str2int } from 'utils/util';
-import { MAX_TOKENS } from 'consts';
+import { DEFAULT_MAX_TOKENS, MAX_TOKENS } from 'consts';
 
 // const debug = Debug('5ire:pages:chat:Editor:Toolbar:MaxTokensCtrl');
 
@@ -45,11 +45,19 @@ export default function MaxTokens({
   const [open, setOpen] = useState<boolean>(false);
   const editStage = useChatStore((state) => state.editStage);
 
-  const modelMaxTokens = useMemo<number>(() => {
-    return (ctx.getModel()?.maxTokens as number) || MAX_TOKENS;
+  const modelMaxTokens = useMemo(() => {
+    const model = ctx.getModel();
+    if (model && model.maxTokens) {
+      return model.maxTokens;
+    }
+    return MAX_TOKENS;
   }, [chat.model]);
 
-  const [maxTokens, setMaxTokens] = useState<number>(1);
+  const curMaxTokens = useMemo<number>(() => {
+    return chat.maxTokens || modelMaxTokens;
+  }, [chat.id, chat.model]);
+
+  const [maxTokens, setMaxTokens] = useState<number>(DEFAULT_MAX_TOKENS);
 
   useEffect(() => {
     Mousetrap.bind('mod+shift+4', () => {
@@ -57,11 +65,11 @@ export default function MaxTokens({
         return !prevOpen;
       });
     });
-    setMaxTokens(modelMaxTokens);
+    setMaxTokens(curMaxTokens || DEFAULT_MAX_TOKENS);
     return () => {
       Mousetrap.unbind('mod+shift+4');
     };
-  }, [chat.id, modelMaxTokens]);
+  }, [chat.id, curMaxTokens]);
 
   const handleOpenChange: PopoverProps['onOpenChange'] = (e, data) =>
     setOpen(data.open || false);
@@ -73,6 +81,7 @@ export default function MaxTokens({
     const value = data.value
       ? data.value
       : str2int(data.displayValue as string);
+    console.log('updateMaxTokens', value);
     const $maxToken = Math.max(Math.min(value as number, modelMaxTokens), 1);
     await editStage(chat.id, { maxTokens: $maxToken });
     setMaxTokens($maxToken);

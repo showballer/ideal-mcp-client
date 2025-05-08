@@ -11,4 +11,9 @@ export default class MistralChatService
     super(name, chatContext);
     this.provider = Mistral;
   }
+
+  protected getSystemRoleName(): string {
+    return 'system';
+  }
+
 }

@@ -56,6 +56,21 @@ export default function GlobalNav({ collapsed }: { collapsed: boolean }) {
     [config.servers],
   );
 
+  const activeToolsCount = useMemo(() => {
+    if (collapsed) {
+      return null;
+    }
+    if (isMCPServersLoading) {
+      return <Spinner size={18} className="mx-2.5 -mb-1" />;
+    }
+    return numOfActiveServers ? (
+      <div className="flex justify-start items-center px-2.5 gap-1 flex-shrink-0">
+        <div className="w-2 h-2 bg-green-500 dark:bg-green-600 rounded-full" />
+        <span>{`${numOfActiveServers}`}</span>
+      </div>
+    ) : null;
+  }, [isMCPServersLoading, numOfActiveServers, collapsed]);
+
   useEffect(() => {
     Mousetrap.bind('alt+1', () => navigate('/tool'));
     Mousetrap.bind('alt+2', () => navigate('/knowledge'));
@@ -76,7 +91,7 @@ export default function GlobalNav({ collapsed }: { collapsed: boolean }) {
     <div
       className={`relative ${
         collapsed ? 'text-center' : ''
-      } border-b border-base pb-2`}
+      } border-b border-base py-2`}
     >
       <div className="px-1">
         <WorkspaceMenu collapsed={collapsed} />
@@ -104,7 +119,9 @@ export default function GlobalNav({ collapsed }: { collapsed: boolean }) {
           </Button>
         </div>
       )}
-      <div className="px-1">
+      <div
+        className={`px-1 flex ${collapsed ? 'justify-center' : 'justify-between'} items-center`}
+      >
         <Button
           appearance="subtle"
           title="Alt+1"
@@ -112,17 +129,9 @@ export default function GlobalNav({ collapsed }: { collapsed: boolean }) {
           className="w-full justify-start"
           onClick={() => navigate('/tool')}
         >
-          {collapsed ? null : (
-            <>
-              {t('Common.Tools')}
-              {isMCPServersLoading ? (
-                <Spinner size={13} className="ml-1" />
-              ) : (
-                !!numOfActiveServers && `(${numOfActiveServers})`
-              )}
-            </>
-          )}
+          {collapsed ? null : t('Common.Tools')}
         </Button>
+        <div>{activeToolsCount}</div>
       </div>
       <div className="px-1">
         <Button

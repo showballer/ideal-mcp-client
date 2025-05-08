@@ -6,11 +6,11 @@ export const ERROR_MODEL = 'ERROR_MODEL';
 
 export const DEFAULT_TEMPERATURE = 0.9;
 
-export const DEFAULT_CONTEXT_WINDOW = 8192;
+export const DEFAULT_CONTEXT_WINDOW = 128000;
 export const MAX_CONTEXT_WINDOW = 40000000; // 40M
 
-export const DEFAULT_MAX_TOKENS = 2048;
-export const MAX_TOKENS = 32000;
+export const DEFAULT_MAX_TOKENS = 4096;
+export const MAX_TOKENS = 16384;
 
 export const NUM_CTX_MESSAGES = 10;
 export const MAX_CTX_MESSAGES = 99;

@@ -18,7 +18,7 @@ import { useState, ChangeEvent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useChatStore from 'stores/useChatStore';
 // import Debug from 'debug';
-import { IChat, IChatContext } from 'intellichat/types';
+import { IChat } from 'intellichat/types';
 import Mousetrap from 'mousetrap';
 import { isNumber } from 'lodash';
 import { MIN_CTX_MESSAGES, MAX_CTX_MESSAGES, NUM_CTX_MESSAGES } from 'consts';
@@ -28,11 +28,9 @@ import { MIN_CTX_MESSAGES, MAX_CTX_MESSAGES, NUM_CTX_MESSAGES } from 'consts';
 const AttacheTextIcon = bundleIcon(AttachText20Filled, AttachText20Regular);
 
 export default function CtxNumCtrl({
-  ctx,
   chat,
   disabled,
 }: {
-  ctx: IChatContext;
   chat: IChat;
   disabled: boolean;
 }) {
@@ -76,7 +74,7 @@ export default function CtxNumCtrl({
       <PopoverTrigger disableButtonEnhancement>
         <Button
           size="small"
-          title={t('Common.NumberOfContextMessages') + '(Mod+Shift+6)'}
+          title={`${t('Common.NumberOfContextMessages')}(Mod+Shift+6)`}
           aria-label={t('Common.NumberOfContextMessages')}
           appearance="subtle"
           icon={<AttacheTextIcon className="mr-0" />}
@@ -101,7 +99,7 @@ export default function CtxNumCtrl({
               <Label aria-hidden>{MIN_CTX_MESSAGES}</Label>
               <Slider
                 id="chat-max-context"
-                step={1}
+                step={3}
                 min={MIN_CTX_MESSAGES}
                 max={MAX_CTX_MESSAGES}
                 value={ctxMessages}

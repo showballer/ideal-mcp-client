@@ -96,10 +96,24 @@ export default function Header() {
           : 'left-[12rem] md:left-0 lg:left-0'
       }`}
     >
-      <div className="flex-grow text-sm text-gray-300 dark:text-gray-600">
+      <div className="flex-grow text-sm text-gray-300 dark:text-gray-600 text-nowrap overflow-hidden overflow-ellipsis whitespace-nowrap">
         {chatFolder.name}
       </div>
       <div className="flex justify-end items-center gap-1">
+        <div className="hidden sm:block">
+          <Button
+            icon={
+              chatSidebarShow ? (
+                <InspectorHideIcon className="text-color-tertiary" />
+              ) : (
+                <InspectorShowIcon className="text-color-tertiary" />
+              )
+            }
+            appearance="transparent"
+            title="Inspector(Mod+shift+r)"
+            onClick={toggleChatSidebarVisibility}
+          />
+        </div>
         {activeChat?.id && activeChat.id !== tempChatId ? (
           <>
             <Button
@@ -108,20 +122,6 @@ export default function Header() {
               title="Mod+d"
               onClick={() => setDelConfirmDialogOpen(true)}
             />
-            <div className="hidden sm:block">
-              <Button
-                icon={
-                  chatSidebarShow ? (
-                    <InspectorHideIcon className="text-color-tertiary" />
-                  ) : (
-                    <InspectorShowIcon className="text-color-tertiary" />
-                  )
-                }
-                appearance="transparent"
-                title="Inspector(Mod+shift+r)"
-                onClick={toggleChatSidebarVisibility}
-              />
-            </div>
             {keyword ? (
               <Tooltip content={t('Common.ClearFilter')} relationship="label">
                 <Button

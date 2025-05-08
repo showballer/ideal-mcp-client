@@ -33,8 +33,8 @@ import {
   DeleteRegular,
   EditFilled,
   EditRegular,
-  OptionsFilled,
-  OptionsRegular,
+  MoreHorizontalFilled,
+  MoreHorizontalRegular,
 } from '@fluentui/react-icons';
 import ConfirmDialog from 'renderer/components/ConfirmDialog';
 import useNav from 'hooks/useNav';
@@ -50,7 +50,10 @@ const DeleteIcon = bundleIcon(DeleteFilled, DeleteRegular);
 const PinIcon = bundleIcon(PinFilled, PinRegular);
 const PinOffIcon = bundleIcon(PinOffFilled, PinOffRegular);
 
-const OptionsIcon = bundleIcon(OptionsFilled, OptionsRegular);
+const MoreHorizontalIcon = bundleIcon(
+  MoreHorizontalFilled,
+  MoreHorizontalRegular,
+);
 
 export default function Grid({
   prompts,
@@ -151,7 +154,7 @@ export default function Grid({
             <TableCellActions>
               <Menu>
                 <MenuTrigger disableButtonEnhancement>
-                  <Button icon={<OptionsIcon />} appearance="subtle" />
+                  <Button icon={<MoreHorizontalIcon />} appearance="subtle" />
                 </MenuTrigger>
                 <MenuPopover>
                   <MenuList>

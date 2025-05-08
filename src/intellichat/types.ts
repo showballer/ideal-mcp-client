@@ -125,6 +125,7 @@ export interface IChatRequestMessageContent {
   tool_use_id?: string;
   text?: string;
   content?: any;
+  images?: string[];
   image_url?: {
     url: string;
   };
