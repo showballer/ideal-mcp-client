@@ -300,8 +300,7 @@ ipcMain.handle('select-knowledge-files', async () => {
       if (fileInfo.size > MAX_FILE_SIZE) {
         dialog.showErrorBox(
           'Error',
-          `the size of ${filePath} exceeds the limit (${
-            MAX_FILE_SIZE / (1024 * 1024)
+          `the size of ${filePath} exceeds the limit (${MAX_FILE_SIZE / (1024 * 1024)
           } MB})`,
         );
         return '[]';
@@ -340,8 +339,7 @@ ipcMain.handle('select-image-with-base64', async () => {
     if (fileInfo.size > MAX_FILE_SIZE) {
       dialog.showErrorBox(
         'Error',
-        `the size of ${filePath} exceeds the limit (${
-          MAX_FILE_SIZE / (1024 * 1024)
+        `the size of ${filePath} exceeds the limit (${MAX_FILE_SIZE / (1024 * 1024)
         } MB})`,
       );
       return null;
@@ -610,12 +608,13 @@ app
 logging.info(`Registering protocol:`, protocol);
 const deeplink = new Deeplink({
   app,
-  // @ts-ignore 虽然这时mainWindow为null,但由于是传入的引用，调用时已实例化
   mainWindow,
   protocol,
-  isDev: isDebug,
+  isDevelopment: isDebug,
   debugLogging: isDebug,
+  electronPath: process.execPath,
 });
+
 deeplink.on('received', (link: string) => {
   const { host, hash } = new URL(link);
   if (host === 'login-callback') {

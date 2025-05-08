@@ -8,20 +8,20 @@ import * as logging from './logging';
 export const DEFAULT_INHERITED_ENV_VARS =
   process.platform === 'win32'
     ? [
-        'APPDATA',
-        'HOMEDRIVE',
-        'HOMEPATH',
-        'LOCALAPPDATA',
-        'PATH',
-        'PROCESSOR_ARCHITECTURE',
-        'SYSTEMDRIVE',
-        'SYSTEMROOT',
-        'TEMP',
-        'USERNAME',
-        'USERPROFILE',
-      ]
+      'APPDATA',
+      'HOMEDRIVE',
+      'HOMEPATH',
+      'LOCALAPPDATA',
+      'PATH',
+      'PROCESSOR_ARCHITECTURE',
+      'SYSTEMDRIVE',
+      'SYSTEMROOT',
+      'TEMP',
+      'USERNAME',
+      'USERPROFILE',
+    ]
     : /* list inspired by the default env inheritance of sudo */
-      ['HOME', 'LOGNAME', 'PATH', 'SHELL', 'TERM', 'USER'];
+    ['HOME', 'LOGNAME', 'PATH', 'SHELL', 'TERM', 'USER'];
 /**
  * Returns a default environment object including only environment variables deemed safe to inherit.
  */
@@ -177,6 +177,7 @@ export default class ModuleContext {
 
   public async activate(server: IMCPServer): Promise<{ error: any }> {
     try {
+      console.log(server, '启动mcp');
       const config = await this.getConfig();
       const mcpSvr = ModuleContext.getMCPServer(server, config) as IMCPServer;
       const { key, command, args, env } = mcpSvr;
@@ -288,6 +289,7 @@ export default class ModuleContext {
       undefined,
       { timeout: 60 * 1000 * 5 },
     );
+    console.log('MCP Tool 执行结果：', result);
     return result;
   }
 
